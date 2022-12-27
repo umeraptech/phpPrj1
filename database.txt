@@ -1,0 +1,7 @@
+create table login
+	( 
+	loginid int primary key AUTO_INCREMENT, 
+	loginName varchar(20) not null, 
+	loginPassword varchar(200) not null,
+	 loginType varchar(5) not null
+);

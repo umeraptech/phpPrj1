@@ -1,12 +1,35 @@
 <?php
+require 'connect.inc.php';
 if (isset($_REQUEST['btnSubmit'])) {
    $userName =  (isset($_POST["txtLogin"]))?$_POST["txtLogin"]:"";
    $userPass =  (isset($_POST["txtPass"]))? md5($_POST["txtPass"]):"";
 
    $successMsg = "";
-
+   $error = "";
+    //user123$, umer
+    $query = "";
    if (!empty($userName) && !empty($userPass)) {
-    $successMsg = "user id is {$userName} and password is {$userPass}" ;
+   // $successMsg = "user id is {$userName} and password is {$userPass}" ;
+    $query = "select loginName, loginType, loginPassword from login where loginName = '{$userName}' and loginPassword = '{$userPass}'";
+    $rslt= $db->query($query);
+    print_r ($rslt);
+   if (!empty($rslt)) {
+    foreach($rslt as $row){
+      if ($userName == $row['loginName'] && $userPass == $row['loginPassword']) {
+        //$successMsg = "You are authenticated" ;
+
+        if ($row['loginType'] == 'user') {
+          header('location: product.php');
+        }else if($row['loginType'] == 'admin'){
+          header('location: admin.php');
+        }
+
+      } else{
+        $error = "Credential doesn't match";
+       }
+    }
+    }
+   
    }
 }
 
@@ -15,7 +38,7 @@ if (isset($_REQUEST['btnSubmit'])) {
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Title</title>
+    <title>Login Page</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -35,7 +58,8 @@ if (isset($_REQUEST['btnSubmit'])) {
           <input type="password" name="txtPass" placeholder="Enter User Password"  class="form-control" required>
           <br>
           <div>
-            <input type="submit" class="btn btn-success" name="btnSubmit"  value="login" />
+            <input type="submit" class="btn btn-success" name="btnSubmit"  value="login" /> &nbsp;
+            <a href="register.php" class="btn btn-info">Register</a>
             
             </div>
             
@@ -44,9 +68,8 @@ if (isset($_REQUEST['btnSubmit'])) {
        <br>
        <div>
             <?php
-                if (!empty($successMsg)) {
-                    
-                
+                if (!empty($successMsg))
+                 {                  
             ?>
                 
                 <div class="alert alert-success">
@@ -57,7 +80,36 @@ if (isset($_REQUEST['btnSubmit'])) {
             <?php
                 }
             ?>
-
+       </div>
+       <div>
+            <?php
+                if (!empty($query))
+                 {                  
+            ?>
+                
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Info!</strong> <?php echo $query; ?>
+                </div>
+                
+            <?php
+                }
+            ?>
+       </div>
+       <div>
+            <?php
+                if (!empty($error))
+                 {                  
+            ?>
+                
+                <div class="alert alert-danger">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Error!</strong> <?php echo $error; ?>
+                </div>
+                
+            <?php
+                }
+            ?>
        </div>
       </div>
     <!-- Optional JavaScript -->

@@ -1,17 +1,26 @@
 <?php
+    require 'connect.inc.php';
     if ($_REQUEST) {
         if (isset($_REQUEST['btnSubmit'])) {
             $userName =  (isset($_POST["txtLogin"]))?$_POST["txtLogin"]:"";
             $userPass =  (isset($_POST["txtPass"]))? $_POST["txtPass"]:"";
             $userConf = ( isset($_POST["txtConf"]))? $_POST["txtConf"]:"";
          
-            $successMsg = "";
+            $incPass = MD5($userPass);
+            $successMsg = "$userPass";
             $errorMsg ="";
+            $qry = "";
+            
          
            if ($userPass === $userConf) {
              if (!empty($userName) && !empty($userPass)) {
-                 $successMsg = "user id is {$userName} and password is {$userPass}" ;
-                 /// insert in table 
+                 //$successMsg = "user id is {$userName} and password is {$userPass}" ;
+                
+                $qry = "insert into login (loginName,loginPassword,loginType) VALUES ('{$userName}','{$incPass}','user')";
+                $insert_flag = $db->exec($qry);
+                if ($insert_flag>0) {
+                    $successMsg = "Record is Inserted";
+                }
                 
                 }
            }
@@ -48,7 +57,8 @@
           <input type="password" name="txtConf" placeholder="Enter User Password"  class="form-control" required>
           <br>
           <div>
-            <input type="submit" class="btn btn-success" name="btnSubmit"  value="login" />
+            <input type="submit" class="btn btn-success" name="btnSubmit"  value="Register" />&nbsp;
+            <a href="login.php" class="btn btn-info">Login</a>
             
             </div>
             
@@ -57,6 +67,7 @@
        <br>
        <div>
             <?php
+                 
                 if (!empty($successMsg)) {
                     
                 
@@ -71,6 +82,7 @@
        </div>
        <div>
             <?php
+
                 if (!empty($errorMsg)) {
                     
                 
@@ -78,6 +90,20 @@
                 <div class="alert alert-danger">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Danger!</strong> <?php echo $errorMsg; ?>
+                </div>                
+            <?php
+                }
+            ?>
+       </div>
+       <div>
+            <?php
+                if (!empty($qry)) {
+                    
+                
+            ?>                
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Info!</strong> <?php echo $qry; ?>
                 </div>                
             <?php
                 }

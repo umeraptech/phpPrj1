@@ -1,5 +1,6 @@
 <?php
 require 'connect.inc.php';
+session_start();
 if (isset($_REQUEST['btnSubmit'])) {
    $userName =  (isset($_POST["txtLogin"]))?$_POST["txtLogin"]:"";
    $userPass =  (isset($_POST["txtPass"]))? md5($_POST["txtPass"]):"";
@@ -17,6 +18,8 @@ if (isset($_REQUEST['btnSubmit'])) {
     foreach($rslt as $row){
       if ($userName == $row['loginName'] && $userPass == $row['loginPassword']) {
         //$successMsg = "You are authenticated" ;
+        $_SESSION["user"]=$row['loginName'];
+        $_SESSION["type"] = $row['loginType'];
 
         if ($row['loginType'] == 'user') {
           header('location: product.php');

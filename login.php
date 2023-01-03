@@ -1,5 +1,6 @@
 <?php
 require 'connect.inc.php';
+
 session_start();
 if (isset($_REQUEST['btnSubmit'])) {
    $userName =  (isset($_POST["txtLogin"]))?$_POST["txtLogin"]:"";

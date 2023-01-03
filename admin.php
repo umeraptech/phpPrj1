@@ -44,6 +44,15 @@
             $errorMsg = "Please Select Image";
         }
 
+        if (!isset($errorMsg)) {
+            $qry = "insert into product (productName,	productRate,	productPic) values ('$name','$rate','$imageFile')";
+            if ( $db->exec($qry)) {
+                $successMsg = "File uploaded and record saved";
+            }else{
+                $errorMsg .= "<br>Error in saving record";
+            }
+        }
+
     }
 ?>
 
@@ -86,6 +95,10 @@
                 
                 <div class="col-md-8">
                    <div class="table-responsive">
+                    <?php
+                        $qry = "Select * from product order by productid desc";
+                        $sno = 1;
+                    ?>
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -95,6 +108,22 @@
                                     <th>Image</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <?php
+                                    $rslt = $db->query($qry);
+                                    foreach ($rslt as $row) {
+                                        echo "<tr>";
+                                ?>
+                                    <td><?php echo $sno; ?></td>
+                                    <td><?php echo $row['productName'] ?></td>
+                                    <td><?php echo $row['productRate'] ?></td>
+                                    <td><img src="<?php echo 'upload/'.$row['productPic']; ?>" alt="<?php echo $row['productName'] ?>" width="100" height="auto"/></td>                                        
+                                <?php
+                                    $sno++;
+                                    echo "</tr>";
+                                    }
+                                ?>
+                            </tbody>
                         </table>
                    </div>
                 </div>
@@ -123,6 +152,21 @@
                 <div class="alert alert-danger">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Error! </strong><?php echo $errorMsg; ?>
+                </div>
+                
+                <?php
+                    }
+                ?>
+            </div>
+            <div style="margin-top: 15px">
+                <?php 
+                    if (!empty($successMsg)) {
+                         
+                ?>
+                
+                <div class="alert alert-success">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Success! </strong><?php echo $successMsg; ?>
                 </div>
                 
                 <?php

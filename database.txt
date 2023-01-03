@@ -5,3 +5,11 @@ create table login
 	loginPassword varchar(200) not null,
 	 loginType varchar(5) not null
 );
+
+
+create table product(
+	productid int primary key AUTO_INCREMENT,
+	productName varchar(50) not null,
+	productRate float not null,
+	productPic varchar(200)
+);
